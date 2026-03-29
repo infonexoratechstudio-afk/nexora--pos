@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora POS - Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="topbar">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="top-logo" alt="Nexora Logo">
+    <h1>Reports Page</h1>
+</div>
+
+<div class="page-box">
+    <h2>System Report</h2>
+
+    <div class="report-cards">
+        <div class="report-card">
+            <h3>Total Products</h3>
+            <p>{{ total_products }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Total Stock Qty</h3>
+            <p>{{ total_stock }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Total Bills</h3>
+            <p>{{ total_bills }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Total Sales</h3>
+            <p>Rs. {{ total_sales_amount }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Cash Sales</h3>
+            <p>Rs. {{ total_cash_sales }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Credit Sales</h3>
+            <p>Rs. {{ total_credit_sales }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Cheque Sales</h3>
+            <p>Rs. {{ total_cheque_sales }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Pending Due</h3>
+            <p>Rs. {{ total_due_amount }}</p>
+        </div>
+    </div>
+
+    <div class="bill-box" style="margin-top: 30px;">
+        <h3>Recent Sales</h3>
+        <table>
+            <tr>
+                <th>Invoice No</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+
+            {% if recent_sales %}
+                {% for sale in recent_sales %}
+                <tr>
+                    <td>{{ sale.invoice_no }}</td>
+                    <td>{{ sale.sale_date }}</td>
+                    <td>{{ sale.customer_name if sale.customer_name else "-" }}</td>
+                    <td>{{ sale.payment_type }}</td>
+                    <td>{{ sale.payment_status }}</td>
+                    <td>Rs. {{ sale.grand_total }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">No sales available</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <a href="/dashboard" class="back-btn">Back to Dashboard</a>
+</div>
+
+</body>
+</html>

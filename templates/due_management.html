@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Due Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1220;
+            color: white;
+            padding: 20px;
+        }
+
+        .box {
+            max-width: 1300px;
+            margin: auto;
+            background: #111827;
+            padding: 20px;
+            border-radius: 18px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #1f2937;
+        }
+
+        a {
+            color: #7dd3fc;
+            text-decoration: none;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            width: 120px;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            background: #22c55e;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .paid {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .partial {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #cbd5e1;
+            padding: 20px;
+        }
+
+        .top-link {
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        @media (max-width: 900px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Due Management</h1>
+        <p><a href="/dashboard" class="top-link">← Back to Dashboard</a></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice No</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Paid</th>
+                    <th>Due</th>
+                    <th>Receive Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if due_sales %}
+                    {% for sale in due_sales %}
+                    <tr>
+                        <td>{{ sale['invoice_no'] }}</td>
+                        <td>{{ sale['sales_date'] }}</td>
+                        <td>{{ sale['customer_name'] }}</td>
+                        <td>{{ sale['payment_method'] }}</td>
+                        <td>
+                            {% if sale['payment_status'] == 'Paid' %}
+                                <span class="paid">{{ sale['payment_status'] }}</span>
+                            {% elif sale['payment_status'] == 'Partially Paid' %}
+                                <span class="partial">{{ sale['payment_status'] }}</span>
+                            {% else %}
+                                <span class="pending">{{ sale['payment_status'] }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sale['grand_total'] }}</td>
+                        <td>{{ sale['paid_amount'] }}</td>
+                        <td>{{ sale['due_amount'] }}</td>
+                        <td>
+                            <form method="POST" action="/update-due/{{ sale['id'] }}">
+                                <input type="number" name="amount_paid" min="0" step="0.01" placeholder="Amount" required>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9" class="empty">No due bills found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

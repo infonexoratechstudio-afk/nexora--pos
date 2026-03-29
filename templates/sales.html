@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales - Nexora POS</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top right, rgba(0,174,255,0.15), transparent 22%),
+                linear-gradient(135deg, #01040c, #031530 45%, #020617 100%);
+            color: #eaf6ff;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 18px;
+            color: #86dcff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(0,89,255,0.18), rgba(0,174,255,0.10));
+            border: 1px solid rgba(0,200,255,0.35);
+            box-shadow: 0 0 28px rgba(0,150,255,0.14);
+            padding: 28px 24px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .hero p {
+            color: #8fe1ff;
+            font-size: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(0,183,255,0.12);
+            color: #71e3ff;
+            border: 1px solid rgba(0,183,255,0.25);
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .card {
+            background: rgba(2, 10, 30, 0.92);
+            border: 1px solid rgba(0,200,255,0.18);
+            border-radius: 22px;
+            padding: 22px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.18);
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin-bottom: 18px;
+            color: #ffffff;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #9edfff;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(0,170,255,0.22);
+            background: rgba(255,255,255,0.06);
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #9aa9bd;
+        }
+
+        select option {
+            color: black;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #0a1830;
+            border: 1px solid rgba(0,170,255,0.25);
+            border-radius: 12px;
+            margin-top: 6px;
+            max-height: 240px;
+            overflow-y: auto;
+            z-index: 20;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(0,170,255,0.12);
+        }
+
+        .suggestion-title {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .suggestion-sub {
+            color: #8fdfff;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0 16px 0;
+        }
+
+        .checkbox-row input {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #00d66b, #1fdc83);
+            color: #02170d;
+        }
+
+        .btn-gray {
+            background: #5d6d8a;
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, #ff2f65, #ff4d7d);
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #10a8ff, #12c9ff);
+            color: #04131d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 16px;
+            margin-top: 8px;
+        }
+
+        th {
+            background: rgba(16, 94, 170, 0.35);
+            color: #aee9ff;
+            padding: 14px 10px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: #e5f4ff;
+            font-size: 14px;
+        }
+
+        .small-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            margin-right: 6px;
+        }
+
+        .edit-btn {
+            background: #f59e0b;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .summary-box {
+            margin-top: 18px;
+            border: 1px solid rgba(0,170,255,0.15);
+            border-radius: 18px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: #d6edff;
+        }
+
+        .summary-line.total {
+            border-top: 1px solid rgba(255,255,255,0.12);
+            margin-top: 6px;
+            padding-top: 14px;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+        }
+
+        .info-note {
+            margin-top: 10px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255, 193, 7, 0.10);
+            border: 1px solid rgba(255, 193, 7, 0.25);
+            color: #ffe08a;
+            font-size: 14px;
+            display: none;
+        }
+
+        .invoice-box {
+            margin-top: 18px;
+            border: 1px dashed rgba(145, 227, 255, 0.4);
+            border-radius: 18px;
+            padding: 18px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        @media (max-width: 1000px) {
+            .grid-4, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .btn-row {
+                flex-direction: column;
+            }
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                color: black;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="back-link" href="/dashboard">← Back to Dashboard</a>
+
+        <div class="hero">
+            <h1>Nexora Tech Studio POS</h1>
+            <p>Smart sales billing • Save sale • Due management • Reports ready</p>
+            <span class="badge">NEXORA TECH STUDIO</span>
+        </div>
+
+        <div class="card">
+            <h2>Sales Billing</h2>
+
+            <div class="grid-4">
+                <div class="form-group">
+                    <label for="salesDate">Sales Date</label>
+                    <input type="date" id="salesDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="invoiceNo">Invoice Number</label>
+                    <input type="text" id="invoiceNo">
+                </div>
+
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" id="customerName" placeholder="Enter customer name">
+                </div>
+
+                <div class="form-group">
+                    <label for="productSearch">Product Search</label>
+                    <input type="text" id="productSearch" placeholder="Type product name like oo">
+                    <div id="suggestions" class="suggestions"></div>
+                </div>
+            </div>
+
+            <div class="grid-4">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="netWeight">Net Weight</label>
+                    <input type="text" id="netWeight" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Retail Price</label>
+                    <input type="number" id="price" min="0" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="qty">Quantity</label>
+                    <input type="number" id="qty" min="1" value="1">
+                </div>
+            </div>
+
+            <div class="grid-4">
+                <div class="form-group">
+                    <label for="discount">Discount</label>
+                    <input type="number" id="discount" min="0" step="0.01" value="0" oninput="renderCart()">
+                </div>
+
+                <div class="form-group">
+                    <label for="paidAmount">Paid Amount</label>
+                    <input type="number" id="paidAmount" min="0" step="0.01" value="0" oninput="renderCart()">
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" onchange="handlePaymentMethodChange()">
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
+                        <option value="Credit">Credit</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentStatus">Payment Status</label>
+                    <select id="paymentStatus" onchange="renderCart()">
+                        <option value="Paid">Paid</option>
+                        <option value="Partially Paid">Partially Paid</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="referenceNo">Reference No / Txn No</label>
+                    <input type="text" id="referenceNo" placeholder="Optional">
+                </div>
+
+                <div class="form-group">
+                    <label for="companyName">Company</label>
+                    <input type="text" id="companyName" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="productType">Product Type</label>
+                    <input type="text" id="productType" readonly>
+                </div>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="freeIssue">
+                <label for="freeIssue" style="margin:0;">Manual Free Issue</label>
+            </div>
+
+            <div id="creditNote" class="info-note">
+                Credit selected. Save Sale click pannina due management la due save aagum.
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-green" onclick="addToCart()">Add Item</button>
+                <button class="btn btn-gray" onclick="clearForm()">Clear Form</button>
+                <button class="btn btn-red" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Cart Items</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Weight</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Free Qty</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cartBody">
+                    <tr>
+                        <td colspan="8" style="color:#8ea6ba;">No items added</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="summary-box">
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span id="subtotalText">0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Discount</span>
+                    <span id="discountText">0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Grand Total</span>
+                    <span id="grandTotalText">0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Paid Amount</span>
+                    <span id="paidAmountText">0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Balance / Due</span>
+                    <span id="balanceText">0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Payment Method</span>
+                    <span id="paymentMethodText">Cash</span>
+                </div>
+                <div class="summary-line">
+                    <span>Payment Status</span>
+                    <span id="paymentStatusText">Paid</span>
+                </div>
+                <div class="summary-line total">
+                    <span>Final Amount</span>
+                    <span id="finalAmountText">0.00</span>
+                </div>
+            </div>
+
+            <div class="btn-row" style="margin-top:16px;">
+                <button class="btn btn-blue" onclick="generateInvoice()">Generate Invoice</button>
+                <button class="btn btn-blue" onclick="printInvoice()">Print Invoice</button>
+                <button class="btn btn-green" onclick="saveSale()">Save Sale</button>
+            </div>
+
+            <div id="invoicePreview" class="invoice-box">
+                <p style="color:#8ea6ba;">Invoice preview will appear here...</p>
+            </div>
+        </div>
+
+        <div id="printArea" style="display:none;"></div>
+    </div>
+
+    <script>
+        const products = [
+            {% for product in products %}
+            {
+                id: {{ product['id'] }},
+                company_name: {{ product['company_name'] | tojson }},
+                product_type: {{ product['product_type'] | tojson }},
+                name: {{ product['name'] | tojson }},
+                net_weight: {{ product['net_weight'] | tojson }},
+                retail_price: {{ product['retail_price'] }},
+                wholesale_price: {{ product['wholesale_price'] }},
+                stock: {{ product['stock'] }},
+                free_issue_enabled: {{ product['free_issue_enabled'] if 'free_issue_enabled' in product.keys() else 0 }},
+                buy_qty: {{ product['buy_qty'] if 'buy_qty' in product.keys() else 0 }},
+                free_qty: {{ product['free_qty'] if 'free_qty' in product.keys() else 0 }}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        let cart = [];
+        let editingIndex = -1;
+        let selectedProduct = null;
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split("T")[0];
+            document.getElementById("salesDate").value = today;
+        }
+
+        function setDefaultInvoiceNumber() {
+            const now = new Date();
+            const invoice = "INV-" +
+                now.getFullYear() +
+                String(now.getMonth() + 1).padStart(2, "0") +
+                String(now.getDate()).padStart(2, "0") + "-" +
+                Math.floor(Math.random() * 900 + 100);
+            document.getElementById("invoiceNo").value = invoice;
+        }
+
+        function handlePaymentMethodChange() {
+            const method = document.getElementById("paymentMethod").value;
+            const creditNote = document.getElementById("creditNote");
+            const paymentStatus = document.getElementById("paymentStatus");
+
+            if (method === "Credit") {
+                creditNote.style.display = "block";
+                paymentStatus.value = "Pending";
+            } else {
+                creditNote.style.display = "none";
+                if (paymentStatus.value === "Pending") {
+                    paymentStatus.value = "Paid";
+                }
+            }
+
+            renderCart();
+        }
+
+        function showSuggestions(query) {
+            const suggestionsBox = document.getElementById("suggestions");
+
+            if (!query.trim()) {
+                suggestionsBox.style.display = "none";
+                suggestionsBox.innerHTML = "";
+                return;
+            }
+
+            const q = query.toLowerCase();
+
+            const filtered = products.filter(p =>
+                p.name.toLowerCase().includes(q) ||
+                p.net_weight.toLowerCase().includes(q) ||
+                (p.name + " " + p.net_weight).toLowerCase().includes(q) ||
+                p.product_type.toLowerCase().includes(q) ||
+                p.company_name.toLowerCase().includes(q)
+            );
+
+            if (filtered.length === 0) {
+                suggestionsBox.innerHTML = `<div class="suggestion-item"><div class="suggestion-title">No product found</div></div>`;
+                suggestionsBox.style.display = "block";
+                return;
+            }
+
+            suggestionsBox.innerHTML = filtered.map(p => `
+                <div class="suggestion-item" onclick="selectProduct(${p.id})">
+                    <div class="suggestion-title">${p.name} ${p.net_weight}</div>
+                    <div class="suggestion-sub">${p.company_name} • ${p.product_type} • Retail: ${Number(p.retail_price).toFixed(2)}</div>
+                </div>
+            `).join("");
+
+            suggestionsBox.style.display = "block";
+        }
+
+        function selectProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            selectedProduct = product;
+
+            document.getElementById("productSearch").value = `${product.name} ${product.net_weight}`;
+            document.getElementById("productName").value = product.name;
+            document.getElementById("netWeight").value = product.net_weight;
+            document.getElementById("price").value = product.retail_price;
+            document.getElementById("companyName").value = product.company_name;
+            document.getElementById("productType").value = product.product_type;
+
+            document.getElementById("suggestions").style.display = "none";
+        }
+
+        function clearForm() {
+            document.getElementById("productSearch").value = "";
+            document.getElementById("productName").value = "";
+            document.getElementById("netWeight").value = "";
+            document.getElementById("price").value = "";
+            document.getElementById("qty").value = 1;
+            document.getElementById("freeIssue").checked = false;
+            document.getElementById("companyName").value = "";
+            document.getElementById("productType").value = "";
+            selectedProduct = null;
+            editingIndex = -1;
+            document.getElementById("suggestions").style.display = "none";
+        }
+
+        function addToCart() {
+            const productName = document.getElementById("productName").value.trim();
+            const netWeight = document.getElementById("netWeight").value.trim();
+            const companyName = document.getElementById("companyName").value.trim();
+            const productType = document.getElementById("productType").value.trim();
+            const price = parseFloat(document.getElementById("price").value);
+            const qty = parseInt(document.getElementById("qty").value);
+            const freeIssueManual = document.getElementById("freeIssue").checked;
+
+            if (!productName) {
+                alert("Please select a product");
+                return;
+            }
+
+            if (isNaN(price) || price < 0) {
+                alert("Please enter valid price");
+                return;
+            }
+
+            if (isNaN(qty) || qty <= 0) {
+                alert("Please enter valid quantity");
+                return;
+            }
+
+            let calculatedFreeQty = 0;
+
+            if (selectedProduct && selectedProduct.free_issue_enabled === 1 && selectedProduct.buy_qty > 0 && selectedProduct.free_qty > 0) {
+                calculatedFreeQty = Math.floor(qty / selectedProduct.buy_qty) * selectedProduct.free_qty;
+            }
+
+            if (freeIssueManual && calculatedFreeQty === 0) {
+                calculatedFreeQty = 1;
+            }
+
+            const total = price * qty;
+
+            const item = {
+                productName,
+                netWeight,
+                companyName,
+                productType,
+                price,
+                qty,
+                freeQty: calculatedFreeQty,
+                freeIssue: freeIssueManual,
+                total
+            };
+
+            if (editingIndex === -1) {
+                cart.push(item);
+            } else {
+                cart[editingIndex] = item;
+                editingIndex = -1;
+            }
+
+            clearForm();
+            renderCart();
+        }
+
+        function editItem(index) {
+            const item = cart[index];
+            document.getElementById("productSearch").value = `${item.productName} ${item.netWeight}`;
+            document.getElementById("productName").value = item.productName;
+            document.getElementById("netWeight").value = item.netWeight;
+            document.getElementById("companyName").value = item.companyName;
+            document.getElementById("productType").value = item.productType;
+            document.getElementById("price").value = item.price;
+            document.getElementById("qty").value = item.qty;
+            document.getElementById("freeIssue").checked = item.freeIssue;
+            editingIndex = index;
+        }
+
+        function deleteItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            editingIndex = -1;
+            renderCart();
+            document.getElementById("invoicePreview").innerHTML = "<p style='color:#8ea6ba;'>Invoice preview will appear here...</p>";
+        }
+
+        function renderCart() {
+            const cartBody = document.getElementById("cartBody");
+            const discount = parseFloat(document.getElementById("discount").value) || 0;
+            const paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const paymentStatus = document.getElementById("paymentStatus").value;
+
+            if (cart.length === 0) {
+                cartBody.innerHTML = `<tr><td colspan="8" style="color:#8ea6ba;">No items added</td></tr>`;
+            } else {
+                let rows = "";
+                cart.forEach((item, index) => {
+                    rows += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.productName}</td>
+                            <td>${item.netWeight}</td>
+                            <td>${item.price.toFixed(2)}</td>
+                            <td>${item.qty}</td>
+                            <td>${item.freeQty}</td>
+                            <td>${item.total.toFixed(2)}</td>
+                            <td>
+                                <button class="small-btn edit-btn" onclick="editItem(${index})">Edit</button>
+                                <button class="small-btn delete-btn" onclick="deleteItem(${index})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                cartBody.innerHTML = rows;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+            let grandTotal = subtotal - discount;
+            if (grandTotal < 0) grandTotal = 0;
+
+            const balance = Math.max(grandTotal - paidAmount, 0);
+            const finalAmount = grandTotal;
+
+            document.getElementById("subtotalText").textContent = subtotal.toFixed(2);
+            document.getElementById("discountText").textContent = discount.toFixed(2);
+            document.getElementById("grandTotalText").textContent = grandTotal.toFixed(2);
+            document.getElementById("paidAmountText").textContent = paidAmount.toFixed(2);
+            document.getElementById("balanceText").textContent = balance.toFixed(2);
+            document.getElementById("paymentMethodText").textContent = paymentMethod;
+            document.getElementById("paymentStatusText").textContent = paymentStatus;
+            document.getElementById("finalAmountText").textContent = finalAmount.toFixed(2);
+        }
+
+        function generateInvoice() {
+            if (cart.length === 0) {
+                alert("Please add items first");
+                return;
+            }
+
+            const salesDate = document.getElementById("salesDate").value;
+            const invoiceNo = document.getElementById("invoiceNo").value.trim();
+            const customerName = document.getElementById("customerName").value.trim() || "Walk-in Customer";
+            const discount = parseFloat(document.getElementById("discount").value) || 0;
+            const paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const referenceNo = document.getElementById("referenceNo").value.trim() || "-";
+            const paymentStatus = document.getElementById("paymentStatus").value;
+
+            const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+            let grandTotal = subtotal - discount;
+            if (grandTotal < 0) grandTotal = 0;
+
+            const dueAmount = Math.max(grandTotal - paidAmount, 0);
+
+            let itemsHtml = "";
+            cart.forEach((item, index) => {
+                itemsHtml += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.productName}</td>
+                        <td>${item.netWeight}</td>
+                        <td>${item.price.toFixed(2)}</td>
+                        <td>${item.qty}</td>
+                        <td>${item.freeQty}</td>
+                        <td>${item.total.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            const invoiceHTML = `
+                <h2 style="margin-bottom:10px;">Invoice</h2>
+                <p><strong>Sales Date:</strong> ${salesDate}</p>
+                <p><strong>Invoice Number:</strong> ${invoiceNo}</p>
+                <p><strong>Customer Name:</strong> ${customerName}</p>
+                <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+                <p><strong>Payment Status:</strong> ${paymentStatus}</p>
+                <p><strong>Reference No:</strong> ${referenceNo}</p>
+
+                <table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse:collapse; margin-top:15px;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Weight</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Free Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+
+                <div style="margin-top:15px;">
+                    <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)}</p>
+                    <p><strong>Discount:</strong> ${discount.toFixed(2)}</p>
+                    <p><strong>Grand Total:</strong> ${grandTotal.toFixed(2)}</p>
+                    <p><strong>Paid Amount:</strong> ${paidAmount.toFixed(2)}</p>
+                    <p><strong>Balance / Due:</strong> ${dueAmount.toFixed(2)}</p>
+                </div>
+            `;
+
+            document.getElementById("invoicePreview").innerHTML = invoiceHTML;
+            document.getElementById("printArea").innerHTML = invoiceHTML;
+            document.getElementById("printArea").style.display = "block";
+        }
+
+        function printInvoice() {
+            if (cart.length === 0) {
+                alert("Please add items first");
+                return;
+            }
+
+            generateInvoice();
+            window.print();
+        }
+
+        async function saveSale() {
+            if (cart.length === 0) {
+                alert("Please add items first");
+                return;
+            }
+
+            const salesDate = document.getElementById("salesDate").value;
+            const invoiceNo = document.getElementById("invoiceNo").value.trim();
+            const customerName = document.getElementById("customerName").value.trim() || "Walk-in Customer";
+            const discount = parseFloat(document.getElementById("discount").value) || 0;
+            const paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const referenceNo = document.getElementById("referenceNo").value.trim() || "";
+            const paymentStatus = document.getElementById("paymentStatus").value;
+
+            const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+            let grandTotal = subtotal - discount;
+            if (grandTotal < 0) grandTotal = 0;
+
+            const dueAmount = Math.max(grandTotal - paidAmount, 0);
+
+            const payload = {
+                invoice_no: invoiceNo,
+                sales_date: salesDate,
+                customer_name: customerName,
+                payment_method: paymentMethod,
+                payment_status: paymentStatus,
+                reference_no: referenceNo,
+                subtotal: subtotal,
+                discount: discount,
+                grand_total: grandTotal,
+                paid_amount: paidAmount,
+                due_amount: dueAmount,
+                items: cart
+            };
+
+            try {
+                const response = await fetch("/save-sale", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Sale saved successfully");
+                    clearCart();
+                    document.getElementById("customerName").value = "";
+                    document.getElementById("paidAmount").value = "0";
+                    document.getElementById("discount").value = "0";
+                    document.getElementById("referenceNo").value = "";
+                    generateNextInvoiceNumber();
+                    renderCart();
+                } else {
+                    alert("Save failed: " + result.message);
+                }
+            } catch (error) {
+                alert("Error saving sale");
+            }
+        }
+
+        function generateNextInvoiceNumber() {
+            const now = new Date();
+            const invoice = "INV-" +
+                now.getFullYear() +
+                String(now.getMonth() + 1).padStart(2, "0") +
+                String(now.getDate()).padStart(2, "0") + "-" +
+                Math.floor(Math.random() * 900 + 100);
+            document.getElementById("invoiceNo").value = invoice;
+        }
+
+        document.getElementById("productSearch").addEventListener("input", function() {
+            showSuggestions(this.value);
+        });
+
+        document.addEventListener("click", function(e) {
+            const suggestions = document.getElementById("suggestions");
+            const searchBox = document.getElementById("productSearch");
+            if (!suggestions.contains(e.target) && e.target !== searchBox) {
+                suggestions.style.display = "none";
+            }
+        });
+
+        setTodayDate();
+        setDefaultInvoiceNumber();
+        handlePaymentMethodChange();
+        renderCart();
+    </script>
+</body>
+</html>

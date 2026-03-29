@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Bill</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="receipt-body">
+
+<div class="thermal-receipt" id="print-area">
+    <div class="receipt-center">
+        <h2>Nexora POS</h2>
+        <p>Nexora Tech Studio</p>
+        <p>Invoice: {{ bill["invoice_no"] }}</p>
+        <p>Date: {{ bill["date"] }}</p>
+        <p>Payment: {{ bill["payment_type"] }}</p>
+        <p>Status: {{ bill["payment_status"] }}</p>
+
+        {% if bill["customer_name"] %}
+        <p>Customer: {{ bill["customer_name"] }}</p>
+        {% endif %}
+
+        {% if bill["cheque_no"] %}
+        <p>Cheque No: {{ bill["cheque_no"] }}</p>
+        {% endif %}
+
+        {% if bill["bank_name"] %}
+        <p>Bank: {{ bill["bank_name"] }}</p>
+        {% endif %}
+
+        {% if bill["reference_no"] %}
+        <p>Ref: {{ bill["reference_no"] }}</p>
+        {% endif %}
+
+        <hr>
+    </div>
+
+    <table class="receipt-table">
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Amt</th>
+        </tr>
+        {% for item in bill["items"] %}
+        <tr>
+            <td>{{ item["name"] }}</td>
+            <td>{{ item["quantity"] }}</td>
+            <td>{{ item["amount"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+    <p class="receipt-center">Grand Total: Rs. {{ bill["grand_total"] }}</p>
+    <p class="receipt-center">Paid: Rs. {{ bill["paid_amount"] }}</p>
+    <p class="receipt-center">Due: Rs. {{ bill["due_amount"] }}</p>
+    <p class="receipt-center">Thank you</p>
+</div>
+
+<div class="no-print receipt-actions">
+    <button onclick="window.print()" class="print-btn">Print Now</button>
+    <a href="/sales" class="back-btn">Back to Sales</a>
+</div>
+
+</body>
+</html>

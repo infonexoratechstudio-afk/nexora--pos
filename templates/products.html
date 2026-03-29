@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Nexora POS</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at top right, rgba(0,174,255,0.15), transparent 22%),
+                linear-gradient(135deg, #01040c, #031530 45%, #020617 100%);
+            color: #eaf6ff;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 0 auto;
+            background: rgba(2, 10, 30, 0.92);
+            border: 1px solid rgba(0,200,255,0.18);
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.18);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 18px;
+            color: #86dcff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(0,89,255,0.18), rgba(0,174,255,0.10));
+            border: 1px solid rgba(0,200,255,0.35);
+            box-shadow: 0 0 28px rgba(0,150,255,0.14);
+            padding: 28px 24px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .hero p {
+            color: #8fe1ff;
+            font-size: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(0,183,255,0.12);
+            color: #71e3ff;
+            border: 1px solid rgba(0,183,255,0.25);
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 26px;
+            margin-bottom: 18px;
+            color: #fff;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        input, select {
+            padding: 14px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(0,170,255,0.22);
+            background: rgba(255,255,255,0.06);
+            color: white;
+            font-size: 15px;
+            width: 100%;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #9aa9bd;
+        }
+
+        select option {
+            color: black;
+        }
+
+        .checkbox-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(0,170,255,0.22);
+            background: rgba(255,255,255,0.06);
+            min-height: 52px;
+        }
+
+        .checkbox-card input {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+        button, .back-btn, .edit-btn, .delete-btn, .cancel-btn {
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .main-btn, .back-btn {
+            background: linear-gradient(135deg, #10a8ff, #12c9ff);
+            color: #04131d;
+        }
+
+        .edit-btn {
+            background: #f59e0b;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .cancel-btn {
+            background: #6b7280;
+        }
+
+        .btn-row {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-box {
+            background: rgba(255,255,255,0.03);
+            border-radius: 18px;
+            padding: 20px;
+            overflow-x: auto;
+            border: 1px solid rgba(0,170,255,0.15);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            min-width: 1400px;
+        }
+
+        th, td {
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background: rgba(16, 94, 170, 0.35);
+            color: #aee9ff;
+        }
+
+        .action-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .inline-form {
+            display: inline;
+            margin: 0;
+        }
+
+        .empty {
+            text-align: center;
+            color: #bbb;
+            padding: 20px;
+        }
+
+        .bottom-actions {
+            margin-top: 22px;
+        }
+
+        .rule-box {
+            color: #90e0ff;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1100px) {
+            .form-grid, .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="back-link" href="/dashboard">← Back to Dashboard</a>
+
+        <div class="hero">
+            <h1>Nexora Tech Studio POS</h1>
+            <p>Product management • Company-wise categorization • Free issue rules</p>
+            <span class="badge">NEXORA TECH STUDIO</span>
+        </div>
+
+        {% if edit_product %}
+            <h1 class="section-title">Edit Product</h1>
+            <form method="POST" action="/products/edit/{{ edit_product['id'] }}">
+                <div class="form-grid">
+                    <select name="company_name" id="company_name" required onchange="updateProductTypes('company_name', 'product_type')">
+                        <option value="">Select Company</option>
+                        <option value="Uswatte" {% if edit_product['company_name'] == 'Uswatte' %}selected{% endif %}>Uswatte</option>
+                        <option value="Darley Butter" {% if edit_product['company_name'] == 'Darley Butter' %}selected{% endif %}>Darley Butter</option>
+                        <option value="Maam" {% if edit_product['company_name'] == 'Maam' %}selected{% endif %}>Maam</option>
+                    </select>
+
+                    <select name="product_type" id="product_type" required>
+                        <option value="">Select Product Type</option>
+                    </select>
+
+                    <input type="text" name="product_name" placeholder="Product Name" value="{{ edit_product['name'] }}" required>
+                    <input type="text" name="net_weight" placeholder="Net Weight" value="{{ edit_product['net_weight'] }}" required>
+
+                    <input type="number" step="0.01" name="wholesale_price" placeholder="Wholesale Price" value="{{ edit_product['wholesale_price'] }}" required>
+                    <input type="number" step="0.01" name="retail_price" placeholder="Retail Price" value="{{ edit_product['retail_price'] }}" required>
+                    <input type="number" name="stock_qty" placeholder="Stock Qty" value="{{ edit_product['stock'] }}" required>
+
+                    <div class="checkbox-card">
+                        <input type="checkbox" id="free_issue_enabled" name="free_issue_enabled" {% if edit_product['free_issue_enabled'] == 1 %}checked{% endif %}>
+                        <label for="free_issue_enabled" style="margin:0;">Free Issue Available</label>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <input type="number" name="buy_qty" placeholder="Buy Qty (Example: 5)" value="{{ edit_product['buy_qty'] }}">
+                    <input type="number" name="free_qty" placeholder="Free Qty (Example: 1)" value="{{ edit_product['free_qty'] }}">
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="main-btn">Update Product</button>
+                    <a href="/products" class="cancel-btn">Cancel</a>
+                </div>
+            </form>
+        {% else %}
+            <h1 class="section-title">Add Product</h1>
+            <form method="POST" action="/products">
+                <div class="form-grid">
+                    <select name="company_name" id="company_name" required onchange="updateProductTypes('company_name', 'product_type')">
+                        <option value="">Select Company</option>
+                        <option value="Uswatte">Uswatte</option>
+                        <option value="Darley Butter">Darley Butter</option>
+                        <option value="Maam">Maam</option>
+                    </select>
+
+                    <select name="product_type" id="product_type" required>
+                        <option value="">Select Product Type</option>
+                    </select>
+
+                    <input type="text" name="product_name" placeholder="Product Name" required>
+                    <input type="text" name="net_weight" placeholder="Net Weight" required>
+
+                    <input type="number" step="0.01" name="wholesale_price" placeholder="Wholesale Price" required>
+                    <input type="number" step="0.01" name="retail_price" placeholder="Retail Price" required>
+                    <input type="number" name="stock_qty" placeholder="Stock Qty" required>
+
+                    <div class="checkbox-card">
+                        <input type="checkbox" id="free_issue_enabled" name="free_issue_enabled">
+                        <label for="free_issue_enabled" style="margin:0;">Free Issue Available</label>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <input type="number" name="buy_qty" placeholder="Buy Qty (Example: 5)">
+                    <input type="number" name="free_qty" placeholder="Free Qty (Example: 1)">
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="main-btn">Add Product</button>
+                </div>
+            </form>
+        {% endif %}
+
+        <div class="table-box">
+            <h2>Product List</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Company</th>
+                        <th>Type</th>
+                        <th>Product Name</th>
+                        <th>Net Weight</th>
+                        <th>Wholesale</th>
+                        <th>Retail</th>
+                        <th>Stock</th>
+                        <th>Free Issue Rule</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if products %}
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product['code'] }}</td>
+                            <td>{{ product['company_name'] }}</td>
+                            <td>{{ product['product_type'] }}</td>
+                            <td>{{ product['name'] }}</td>
+                            <td>{{ product['net_weight'] }}</td>
+                            <td>{{ product['wholesale_price'] }}</td>
+                            <td>{{ product['retail_price'] }}</td>
+                            <td>{{ product['stock'] }}</td>
+                            <td class="rule-box">
+                                {% if product['free_issue_enabled'] == 1 %}
+                                    Buy {{ product['buy_qty'] }} Get {{ product['free_qty'] }} Free
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-wrap">
+                                    <a href="/products/edit/{{ product['id'] }}" class="edit-btn">Edit</a>
+                                    <form method="POST" action="/products/delete/{{ product['id'] }}" class="inline-form" onsubmit="return confirm('Delete this product?')">
+                                        <button type="submit" class="delete-btn">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="empty">No products added yet</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bottom-actions">
+            <a href="/dashboard" class="back-btn">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const companyTypeMap = {
+            "Uswatte": ["Tipi Tipi", "Biscuits"],
+            "Darley Butter": ["Powders", "Liquid items", "Soap items", "Oothupathi"],
+            "Maam": ["Biscuits"]
+        };
+
+        function updateProductTypes(companySelectId, typeSelectId, selectedType = "") {
+            const companySelect = document.getElementById(companySelectId);
+            const typeSelect = document.getElementById(typeSelectId);
+            const selectedCompany = companySelect.value;
+
+            typeSelect.innerHTML = '<option value="">Select Product Type</option>';
+
+            if (companyTypeMap[selectedCompany]) {
+                companyTypeMap[selectedCompany].forEach(function(type) {
+                    const option = document.createElement("option");
+                    option.value = type;
+                    option.textContent = type;
+
+                    if (type === selectedType) {
+                        option.selected = true;
+                    }
+
+                    typeSelect.appendChild(option);
+                });
+            }
+        }
+
+        window.onload = function() {
+            {% if edit_product %}
+                updateProductTypes("company_name", "product_type", "{{ edit_product['product_type'] }}");
+            {% else %}
+                updateProductTypes("company_name", "product_type");
+            {% endif %}
+        };
+    </script>
+</body>
+</html>
