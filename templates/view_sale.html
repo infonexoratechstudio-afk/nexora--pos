@@ -1,0 +1,6 @@
+<h1>Invoice</h1>
+<p>{{ sale.invoice_no }}</p>
+
+{% for item in items %}
+  <p>{{ item.product_name }} - {{ item.qty }}</p>
+{% endfor %}
