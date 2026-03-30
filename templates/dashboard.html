@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexora POS Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<div class="topbar">
-    <img src="{{ url_for('static', filename='logo.png') }}" class="top-logo" alt="Nexora Logo">
-    <h1>Nexora POS Dashboard</h1>
+{% block content %}
+<h1>Nexora POS Dashboard</h1>
+
+<div class="stats">
+    <div class="card">
+        <h3>Total Products</h3>
+        <p style="font-size: 28px;">{{ total_products }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Stock</h3>
+        <p style="font-size: 28px;">{{ total_stock }}</p>
+    </div>
 </div>
-
-<div class="dashboard-container dashboard-6">
-    <a href="/sales" class="card">Sales</a>
-    <a href="/products" class="card">Products</a>
-    <a href="/stock" class="card">Stock</a>
-    <a href="/reports" class="card">Reports</a>
-    <a href="/due-management" class="card">Due Management</a>
-</div>
-
-</body>
-</html>
+{% endblock %}
