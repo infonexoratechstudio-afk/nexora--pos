@@ -3,17 +3,17 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = "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"
+app.secret_key = "nexora_secret_key"
 
-
-DB_NAME = "pos.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, "pos.db")
 
 
 # ----------------------------
 # DATABASE
 # ----------------------------
 def get_db_connection():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_NAME, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -48,7 +48,11 @@ def generate_product_code():
     conn.close()
 
     next_id = 1 if last is None else last["id"] + 1
-    return str(next_id).zfill(8)   # 00000001
+    return str(next_id).zfill(8)
+
+
+# IMPORTANT FOR RAILWAY
+init_db()
 
 
 # ----------------------------
@@ -62,8 +66,14 @@ def home():
 @app.route("/dashboard")
 def dashboard():
     conn = get_db_connection()
-    total_products = conn.execute("SELECT COUNT(*) AS count FROM products").fetchone()["count"]
-    total_stock = conn.execute("SELECT COALESCE(SUM(stock), 0) AS total FROM products").fetchone()["total"]
+    total_products = conn.execute(
+        "SELECT COUNT(*) AS count FROM products"
+    ).fetchone()["count"]
+
+    total_stock = conn.execute(
+        "SELECT COALESCE(SUM(stock), 0) AS total FROM products"
+    ).fetchone()["total"]
+
     conn.close()
 
     return render_template(
@@ -78,16 +88,27 @@ def products():
     search = request.args.get("search", "").strip()
 
     conn = get_db_connection()
+
     if search:
         items = conn.execute("""
             SELECT * FROM products
-            WHERE name LIKE ? OR category LIKE ? OR company LIKE ? OR product_code LIKE ?
+            WHERE name LIKE ?
+               OR category LIKE ?
+               OR company LIKE ?
+               OR product_code LIKE ?
+               OR net_weight LIKE ?
             ORDER BY id DESC
-        """, (f"%{search}%", f"%{search}%", f"%{search}%", f"%{search}%")).fetchall()
+        """, (
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%"
+        )).fetchall()
     else:
         items = conn.execute("SELECT * FROM products ORDER BY id DESC").fetchall()
-    conn.close()
 
+    conn.close()
     return render_template("products.html", products=items, search=search)
 
 
@@ -129,8 +150,8 @@ def add_product():
             flash("Product added successfully.", "success")
             return redirect(url_for("products"))
 
-        except sqlite3.IntegrityError:
-            flash("Product code already exists. Try again.", "danger")
+        except Exception as e:
+            flash(f"Error adding product: {str(e)}", "danger")
             return redirect(url_for("add_product"))
 
     return render_template("add_product.html")
@@ -139,7 +160,10 @@ def add_product():
 @app.route("/edit_product/<int:product_id>", methods=["GET", "POST"])
 def edit_product(product_id):
     conn = get_db_connection()
-    product = conn.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
+    product = conn.execute(
+        "SELECT * FROM products WHERE id = ?",
+        (product_id,)
+    ).fetchone()
 
     if product is None:
         conn.close()
@@ -169,16 +193,22 @@ def edit_product(product_id):
             flash("Buy price, sell price, and stock must be valid numbers.", "danger")
             return redirect(url_for("edit_product", product_id=product_id))
 
-        conn.execute("""
-            UPDATE products
-            SET name = ?, category = ?, company = ?, net_weight = ?, buy_price = ?, sell_price = ?, stock = ?
-            WHERE id = ?
-        """, (name, category, company, net_weight, buy_price, sell_price, stock, product_id))
-        conn.commit()
-        conn.close()
+        try:
+            conn.execute("""
+                UPDATE products
+                SET name = ?, category = ?, company = ?, net_weight = ?, buy_price = ?, sell_price = ?, stock = ?
+                WHERE id = ?
+            """, (name, category, company, net_weight, buy_price, sell_price, stock, product_id))
+            conn.commit()
+            conn.close()
 
-        flash("Product updated successfully.", "success")
-        return redirect(url_for("products"))
+            flash("Product updated successfully.", "success")
+            return redirect(url_for("products"))
+
+        except Exception as e:
+            conn.close()
+            flash(f"Error updating product: {str(e)}", "danger")
+            return redirect(url_for("edit_product", product_id=product_id))
 
     conn.close()
     return render_template("edit_product.html", product=product)
@@ -186,15 +216,24 @@ def edit_product(product_id):
 
 @app.route("/delete_product/<int:product_id>", methods=["POST"])
 def delete_product(product_id):
-    conn = get_db_connection()
-    conn.execute("DELETE FROM products WHERE id = ?", (product_id,))
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        conn.execute("DELETE FROM products WHERE id = ?", (product_id,))
+        conn.commit()
+        conn.close()
 
-    flash("Product deleted successfully.", "success")
+        flash("Product deleted successfully.", "success")
+    except Exception as e:
+        flash(f"Error deleting product: {str(e)}", "danger")
+
     return redirect(url_for("products"))
 
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
+
 if __name__ == "__main__":
-    init_db()
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
