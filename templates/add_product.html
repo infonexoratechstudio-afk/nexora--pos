@@ -1,7 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Add Product</h1>
-<form method="POST">
-  Name: <input name="product_name"><br>
-  Price: <input name="retail_price"><br>
-  Stock: <input name="stock"><br>
-  <button type="submit">Add</button>
+
+<form method="POST" action="{{ url_for('add_product') }}">
+    <label>Product Name</label>
+    <input type="text" name="name" required>
+
+    <label>Category</label>
+    <input type="text" name="category" required>
+
+    <label>Company</label>
+    <input type="text" name="company" required>
+
+    <label>Net Weight</label>
+    <input type="text" name="net_weight" placeholder="Example: 100g / 500ml">
+
+    <label>Buy Price</label>
+    <input type="number" step="0.01" name="buy_price" required>
+
+    <label>Sell Price</label>
+    <input type="number" step="0.01" name="sell_price" required>
+
+    <label>Stock</label>
+    <input type="number" name="stock" required>
+
+    <button type="submit">Save Product</button>
 </form>
+{% endblock %}
